@@ -1,0 +1,80 @@
+[tool.poetry]
+name = "grid-pathfinding2"
+version = "0.1.0"
+description = ""
+authors = ["Elliot <3186037+elliot-100@users.noreply.github.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+pygame-ce = "^2.5"
+
+[tool.poetry.group.dev.dependencies]
+pre-commit = "^3.7"
+ruff = "^0.4"
+
+# Non-runtime dependencies that are required by GitHub CI but not installed by actions
+[tool.poetry.group.ci.dependencies]
+mypy = "^1.10"
+pytest = "^8.2"
+
+[tool.mypy]
+# equivalent to `strict = true` for v1.10.0:
+warn_unused_configs = true
+disallow_any_generics = true
+disallow_subclassing_any = true
+disallow_untyped_calls = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+disallow_untyped_decorators = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_return_any = true
+no_implicit_reexport = true
+strict_equality = true
+extra_checks = true
+
+[tool.ruff]
+target-version = "py312"  # Ruff doesn't respect Python dependency in [tool.poetry.dependencies]
+
+[tool.ruff.lint]
+select = ["ALL"]
+
+ignore = [
+# Rules that conflict with Ruff formatter:
+#   COM812 Trailing comma missing
+#   ISC001 Implicitly concatenated string literals on one line
+"COM812", "ISC001",
+
+# Rules that are deprecated
+#   ANN101 Missing type annotation for `self` in method
+#   ANN102 Missing type annotation for `cls` in classmethod
+"ANN101", "ANN102",
+
+# Other
+#   D105 Missing docstring in magic method
+"D105",
+]
+
+[tool.ruff.lint.per-file-ignores]
+# Ignore rules that aren't relevant in tests:
+#   F841 Local variable is assigned to but never used
+#   PLR2004 Magic value used in comparison
+#   S101 Use of assert detected
+#   SLF001 Private member accessed
+"**/tests/*" = ["F841", "PLR2004", "S101", "SLF001"]
+
+# Ignore rules that conflict with Mypy
+#   PLC0414 Import alias does not rename original package
+"__init__.py" = ["PLC0414"]
+
+[tool.ruff.lint.pylint]
+max-args = 8
+
+[tool.ruff.lint.pydocstyle]
+convention = "numpy"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
