@@ -44,7 +44,6 @@ class Agent:
             Path to `goal_location` as a list of locations.
             Empty list if no path found.
         """
-        path_to_goal: list[GridRef] = []
         self._came_from[self.location] = None
         self._cost_so_far[self.location] = 0
 
@@ -70,10 +69,12 @@ class Agent:
                     frontier.put(priority=new_cost, location=new_location)
                     self._came_from[new_location] = current_location
 
+        # Construct path starting at goal and retracing to agent location...
+        path_to_goal: list[GridRef] = [goal_location]
         location = goal_location
         while location is not self.location:
             # TO DO:  Incompatible types in assignment (expression has type "GridRef |
             # None", variable has type "GridRef")
             location = self._came_from.get(location)  # type: ignore[assignment]
             path_to_goal.append(location)
-        return path_to_goal
+        return list(reversed(path_to_goal))
