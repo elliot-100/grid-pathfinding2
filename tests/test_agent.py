@@ -30,6 +30,7 @@ def test_uniform_cost_search__happy_path() -> None:
 
     # assert
     assert search == [
-        GridRef(1, 1),
         GridRef(0, 0),
+        GridRef(1, 1),
+        GridRef(2, 2),
     ]
