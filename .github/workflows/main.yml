@@ -1,0 +1,53 @@
+# Install Poetry, the project and required dependencies
+# Check format and lint with ruff
+# Type check with mypy
+# with a single version of Python.
+
+# Put non-runtime dependencies in e.g.[tool.poetry.group.ci.dependencies] if they are
+# not installed by actions.
+
+# Dependencies in [tool.poetry.group.dev.dependencies] are ignored by this script.
+
+
+name: Python 3.12 app with Poetry
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Set up Python 3.12
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.12"
+    - name: Install Poetry
+      uses: snok/install-poetry@v1
+      with:
+        virtualenvs-create: true
+        virtualenvs-in-project: true
+    - name: Install project
+      run: poetry install --without dev
+    - name: Check format with ruff
+      # by default: exit with error if rule violations
+      uses: chartboost/ruff-action@v1
+      with:
+        args: format
+    - name: Lint with ruff
+      # by default: exit with error if rule violations
+      uses: chartboost/ruff-action@v1
+    - name: Check typing with mypy
+      run: |
+        source $VENV
+        mypy .
+    - name: Test with pytest
+      run: |
+        source $VENV
+        pytest
