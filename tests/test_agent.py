@@ -7,26 +7,46 @@ from pathfinding.grid import Grid
 from pathfinding.grid_ref import GridRef
 
 
+def test_create_happy_path() -> None:
+    """Test that Agent is created as expected."""
+    # arrange
+    grid0 = Grid(2, 2)
+
+    # act
+    agent0 = Agent(
+        grid0,
+        GridRef(1, 1),
+    )
+    # assert
+    assert agent0.grid == grid0
+    assert agent0.location == GridRef(1, 1)
+    assert agent0._came_from == {}
+    assert agent0._cost_so_far == {}
+
+
 def test_agent_not_within_grid_bounds_raises_exception() -> None:
     """Test that an exception is raised if agent is created outside grid bounds."""
     # arrange
-    grid = Grid(2, 2)
+    grid0 = Grid(2, 2)
 
     # act, assert
     with pytest.raises(IndexError):
-        agent = Agent(grid, GridRef(1, 2))
+        agent0 = Agent(
+            grid0,
+            GridRef(1, 2),
+        )
 
 
 def test_uniform_cost_search__happy_path() -> None:
     """Test that a trivial search is calculated correctly."""
     # arrange
-    grid = Grid(3, 3)
-    agent = Agent(
-        grid,
+    grid0 = Grid(3, 3)
+    agent0 = Agent(
+        grid0,
         GridRef(0, 0),
     )
     # act
-    search = agent.uniform_cost_search(GridRef(2, 2))
+    search = agent0.uniform_cost_search(GridRef(2, 2))
 
     # assert
     assert search == [
