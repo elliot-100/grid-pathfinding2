@@ -1,13 +1,10 @@
 """Agent class."""
 
-from dataclasses import dataclass, field
-
 from .grid import Grid
 from .grid_ref import GridRef
 from .priority_queue import _PriorityQueue
 
 
-@dataclass
 class Agent:
     """Agent class.
 
@@ -17,16 +14,16 @@ class Agent:
     location: GridRef
     """
 
-    grid: Grid
-    location: GridRef
+    def __init__(self, grid: Grid, location: GridRef) -> None:
+        self.grid = grid
+        self.location = location
 
-    _came_from: dict[GridRef, GridRef | None] = field(default_factory=dict, init=False)
-    _cost_so_far: dict[GridRef, float] = field(default_factory=dict, init=False)
-
-    def __post_init__(self) -> None:
         if not self.grid.in_bounds(self.location):
             err_msg = f"Location {self.location} not on grid."
             raise IndexError(err_msg)
+
+        self._came_from: dict[GridRef, GridRef | None] = {}
+        self._cost_so_far: dict[GridRef, float] = {}
 
     def uniform_cost_search(
         self,

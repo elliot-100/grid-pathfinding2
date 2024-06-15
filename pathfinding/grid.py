@@ -1,7 +1,6 @@
 """Grid class."""
 
 import math
-from dataclasses import dataclass, field
 
 from .grid_ref import GridRef
 
@@ -9,7 +8,6 @@ CARDINAL_DIRECTIONS = {(1, 0), (0, 1), (-1, 0), (0, -1)}
 DIAGONAL_DIRECTIONS = {(1, 1), (-1, 1), (-1, -1), (1, -1)}
 
 
-@dataclass
 class Grid:
     """Rectangular Grid class.
 
@@ -27,14 +25,18 @@ class Grid:
         Allowed directional moves.
     """
 
-    # Set by init:
-    size_x: int
-    size_y: int
-    allow_diagonal_moves: bool = True
-    untraversable_locations: list[GridRef] = field(default_factory=list)
+    def __init__(
+        self,
+        size_x: int,
+        size_y: int,
+        *,
+        allow_diagonal_moves: bool = True,
+    ) -> None:
+        self.size_x = size_x
+        self.size_y = size_y
+        self.allow_diagonal_moves = allow_diagonal_moves
 
-    def __post_init__(self) -> None:
-        """Set allowable directions."""
+        self.untraversable_locations: list[GridRef] = []
         self._directions = CARDINAL_DIRECTIONS
         if self.allow_diagonal_moves:
             self._directions.update(DIAGONAL_DIRECTIONS)
