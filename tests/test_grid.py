@@ -25,6 +25,7 @@ def test_create_happy_path() -> None:
         (1, 0),
         (1, 1),
     }
+    assert grid0.agents == []
 
 
 def test_neighbours_not_at_edge() -> None:
