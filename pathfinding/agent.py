@@ -1,8 +1,14 @@
 """Agent class."""
 
-from .grid import Grid
-from .grid_ref import GridRef
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
 from .priority_queue import _PriorityQueue
+
+if TYPE_CHECKING:
+    from .grid import Grid
+    from .grid_ref import GridRef
 
 
 class Agent:
@@ -22,25 +28,27 @@ class Agent:
             err_msg = f"Location {self.location} not on grid."
             raise IndexError(err_msg)
 
+        self.goal: GridRef | None = None
+        self.path_to_goal: list[GridRef] = []
         self._came_from: dict[GridRef, GridRef | None] = {}
         self._cost_so_far: dict[GridRef, float] = {}
+        self.grid.agents.append(self)
 
     def uniform_cost_search(
         self,
-        goal_location: GridRef,
     ) -> list[GridRef]:
-        """Perform uniform cost search (variation of Dijkstra's algorithm).
+        """Perform uniform cost search for`self.goal`.
 
-        Parameters
-        ----------
-        goal_location: GridRef
+        Variation of Dijkstra's algorithm.
 
         Returns
         -------
         list[GridRef]
-            Path to `goal_location` as a list of locations.
+            Path to `self.goal` as a list of locations.
             Empty list if no path found.
         """
+        if self.goal is None:
+            raise ValueError
         self._came_from[self.location] = None
         self._cost_so_far[self.location] = 0
 
@@ -50,7 +58,7 @@ class Agent:
         while not frontier.is_empty:
             current_location = frontier.get()
 
-            if current_location == goal_location:  # early exit
+            if current_location == self.goal:  # early exit
                 break
 
             for new_location in self.grid.neighbours(current_location):
@@ -67,11 +75,12 @@ class Agent:
                     self._came_from[new_location] = current_location
 
         # Construct path starting at goal and retracing to agent location...
-        path_to_goal: list[GridRef] = [goal_location]
-        location = goal_location
+        path_from_goal: list[GridRef] = [self.goal]
+        location = self.goal
         while location is not self.location:
             # TO DO:  Incompatible types in assignment (expression has type "GridRef |
             # None", variable has type "GridRef")
             location = self._came_from.get(location)  # type: ignore[assignment]
-            path_to_goal.append(location)
-        return list(reversed(path_to_goal))
+            path_from_goal.append(location)
+            self.path_to_goal = list(reversed(path_from_goal))
+        return self.path_to_goal

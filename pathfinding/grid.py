@@ -1,8 +1,14 @@
 """Grid class."""
 
+from __future__ import annotations
+
 import math
+from typing import TYPE_CHECKING
 
 from .grid_ref import GridRef
+
+if TYPE_CHECKING:
+    from .agent import Agent
 
 CARDINAL_DIRECTIONS = {(1, 0), (0, 1), (-1, 0), (0, -1)}
 DIAGONAL_DIRECTIONS = {(1, 1), (-1, 1), (-1, -1), (1, -1)}
@@ -40,6 +46,7 @@ class Grid:
         self._directions = CARDINAL_DIRECTIONS
         if self.allow_diagonal_moves:
             self._directions.update(DIAGONAL_DIRECTIONS)
+        self.agents: list[Agent] = []
 
     def in_bounds(self, location: GridRef) -> bool:
         """Determine whether `location` is within the Grid."""
@@ -92,3 +99,23 @@ class Grid:
         x_dist = abs(location1.x - location2.x)
         y_dist = abs(location1.y - location2.y)
         return math.sqrt(x_dist**2 + y_dist**2)
+
+    def text_render(self) -> str:
+        """Output a text-based visual representation."""
+        output = "\n"
+        for y in range(self.size_y):
+            for x in range(self.size_x):
+                location = GridRef(x, y)
+                char = "· "
+                if location in self.untraversable_locations:
+                    char = "█ "
+                for agent in self.agents:
+                    if location in agent.path_to_goal:
+                        char = "+ "
+                    if location == agent.location:
+                        char = "A "
+                    if location == agent.goal:
+                        char = "G "
+                output += char
+            output += "\n"
+        return output

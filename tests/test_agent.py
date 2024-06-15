@@ -22,6 +22,8 @@ def test_create_happy_path() -> None:
     assert agent0.location == GridRef(1, 1)
     assert agent0._came_from == {}
     assert agent0._cost_so_far == {}
+    assert agent0.goal is None
+    assert agent0.grid.agents == [agent0]
 
 
 def test_agent_not_within_grid_bounds_raises_exception() -> None:
@@ -45,8 +47,10 @@ def test_uniform_cost_search__happy_path() -> None:
         grid0,
         GridRef(0, 0),
     )
+    agent0.goal = GridRef(2, 2)
+
     # act
-    search = agent0.uniform_cost_search(GridRef(2, 2))
+    search = agent0.uniform_cost_search()
 
     # assert
     assert search == [
