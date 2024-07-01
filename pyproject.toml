@@ -11,7 +11,7 @@ pygame-ce = "^2.5"
 
 [tool.poetry.group.dev.dependencies]
 pre-commit = "^3.7"
-ruff = "^0.4"
+ruff = "^0.5"
 
 # Non-runtime dependencies that are required by GitHub CI but not installed by actions
 [tool.poetry.group.ci.dependencies]
@@ -47,14 +47,10 @@ ignore = [
 #   ISC001 Implicitly concatenated string literals on one line
 "COM812", "ISC001",
 
-# Rules that are deprecated
-#   ANN101 Missing type annotation for `self` in method
-#   ANN102 Missing type annotation for `cls` in classmethod
-"ANN101", "ANN102",
-
 # Other
 #   D105 Missing docstring in magic method
-"D105",
+#   D205 1 blank line required between summary line and description
+"D105", "D205",
 ]
 
 [tool.ruff.lint.per-file-ignores]
