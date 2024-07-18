@@ -51,7 +51,8 @@ ignore = [
 # Other
 #   D105 Missing docstring in magic method
 #   D205 1 blank line required between summary line and description
-"D105", "D205",
+#   S311 Standard pseudo-random generators are not suitable for cryptographic purposes
+"D105", "D205", "S311",
 ]
 
 [tool.ruff.lint.per-file-ignores]
