@@ -1,4 +1,4 @@
-"""Grid class."""
+"""Module containing `Grid` class."""
 
 from __future__ import annotations
 
@@ -11,29 +11,12 @@ from .grid_ref import GridRef
 if TYPE_CHECKING:
     from .agent import Agent
 
-CARDINAL_DIRECTIONS = {(1, 0), (0, 1), (-1, 0), (0, -1)}
-DIAGONAL_DIRECTIONS = {(1, 1), (-1, 1), (-1, -1), (1, -1)}
+_CARDINAL_DIRECTIONS = {(1, 0), (0, 1), (-1, 0), (0, -1)}
+_DIAGONAL_DIRECTIONS = {(1, 1), (-1, 1), (-1, -1), (1, -1)}
 
 
 class Grid:
-    """Rectangular Grid class.
-
-    Public attributes
-    -----------------
-    size_x: int
-    size_y: int
-    allow_diagonal_moves: bool, default True
-    untraversable_locations: list[GridRef]
-        List of locations which cannot be traversed.
-    traversed: list[GridRef]
-        List of locations which have been traversed.
-        Currently populated externally.
-
-    Non-public/internal attributes
-    ------------------------------
-    _directions: set[GridRef]
-        Allowed directional moves.
-    """
+    """Rectangular grid class."""
 
     def __init__(
         self,
@@ -47,15 +30,18 @@ class Grid:
         self.allow_diagonal_moves = allow_diagonal_moves
 
         self.untraversable_locations: list[GridRef] = []
+        """Locations which cannot be traversed."""
         self.traversed: set[GridRef] = set()
+        """Locations which have been traversed.
+        Currently populated externally."""
 
-        self._directions = CARDINAL_DIRECTIONS
+        self._directions = _CARDINAL_DIRECTIONS
         if self.allow_diagonal_moves:
-            self._directions.update(DIAGONAL_DIRECTIONS)
+            self._directions.update(_DIAGONAL_DIRECTIONS)
         self.agents: list[Agent] = []
 
     def in_bounds(self, location: GridRef) -> bool:
-        """Determine whether `location` is within the Grid."""
+        """Determine whether a location is within the grid."""
         return 0 <= location.x < self.size_x and 0 <= location.y < self.size_y
 
     def random_location(self, *, allow_untraversable: bool = False) -> GridRef:
@@ -72,11 +58,11 @@ class Grid:
         return location
 
     def is_traversable(self, location: GridRef) -> bool:
-        """Determine whether `location` is traversable."""
+        """Determine whether a location is traversable."""
         return location not in self.untraversable_locations
 
     def neighbours(self, location: GridRef) -> set[GridRef]:
-        """Return reachable neighbours of `location`."""
+        """Return a location's reachable neighbours."""
         reachable_neighbours: set[GridRef] = set()
 
         if location in self.untraversable_locations:
@@ -89,7 +75,7 @@ class Grid:
         return reachable_neighbours
 
     def untraversable_from_map(self, grid_map: list[str]) -> list[GridRef]:
-        """Set `Grid.untraversable_locations` from 'X's in text representation.
+        """Set untraversable locations from 'X's in text representation.
 
         Does not set grid dimensions. Out of bounds locations are ignored.
 

@@ -1,4 +1,4 @@
-"""SimpleRenderer class module."""
+"""Module containing `GridRenderer` class."""
 
 from typing import ClassVar
 
@@ -9,7 +9,7 @@ from .grid_ref import GridRef
 
 
 class GridRenderer:
-    """Render the grid as a static image."""
+    """Renders a `.grid.Grid` as a static image."""
 
     COLOR_MAPPING: ClassVar = {
         "EMPTY": (128, 128, 128),  # pygame 'grey50'

@@ -1,11 +1,11 @@
-"""GridRef class."""
+"""Module containing `GridRef` class."""
 
 from dataclasses import dataclass
 
 
 @dataclass(frozen=True)  # therefore hashable
 class GridRef:
-    """Grid Reference class."""
+    """Grid reference class."""
 
     x: int
     y: int

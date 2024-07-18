@@ -1,10 +1,10 @@
-"""Agent class."""
+"""Module containing `Agent` class."""
 
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
-from .priority_queue import _PriorityQueue
+from ._priority_queue import _PriorityQueue
 
 if TYPE_CHECKING:
     from .grid import Grid
@@ -12,13 +12,7 @@ if TYPE_CHECKING:
 
 
 class Agent:
-    """Agent class.
-
-    Public attributes
-    -----------------
-    grid: Grid
-    location: GridRef
-    """
+    """Agent class."""
 
     def __init__(self, grid: Grid, location: GridRef) -> None:
         self.grid = grid
@@ -43,7 +37,7 @@ class Agent:
 
         Returns
         -------
-        list[GridRef]
+        list[GridRef] :
             Path to `self.goal` as a list of locations.
             Empty list if no path found.
         """
