@@ -6,9 +6,6 @@ from pathfinding.agent import Agent
 from pathfinding.grid import Grid
 from pathfinding.grid_ref import GridRef
 
-WINDOW_SIZE = 800, 600
-WINDOW_CAPTION = "Pathfinding demo"
-
 
 def run() -> None:
     """Create a Grid, bind a Display and run it."""
