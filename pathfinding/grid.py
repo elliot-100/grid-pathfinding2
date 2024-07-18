@@ -58,11 +58,18 @@ class Grid:
         """Determine whether `location` is within the Grid."""
         return 0 <= location.x < self.size_x and 0 <= location.y < self.size_y
 
-    def random_location(self) -> GridRef:
-        """Return a random location on the Grid."""
-        return GridRef(
+    def random_location(self, *, allow_untraversable: bool = False) -> GridRef:
+        """Return a random location on the Grid.
+
+        By default, don't allow untraversable locations.
+
+        """
+        location = GridRef(
             random.randint(0, self.size_x - 1), random.randint(0, self.size_y - 1)
         )
+        if not allow_untraversable and not self.is_traversable(location):
+            return self.random_location()
+        return location
 
     def is_traversable(self, location: GridRef) -> bool:
         """Determine whether `location` is traversable."""

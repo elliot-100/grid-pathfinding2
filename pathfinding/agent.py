@@ -80,8 +80,6 @@ class Agent:
         while location is not self.location:
             if location is None:
                 err_msg = "Unexpected error."
-                if not self.grid.is_traversable(self.goal):
-                    err_msg += f" Goal at {self.goal} not traversable."
                 raise ValueError(err_msg)
             # TO DO:  Incompatible types in assignment (expression has type "GridRef |
             # None", variable has type "GridRef")
