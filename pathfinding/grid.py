@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import math
+import random
 from typing import TYPE_CHECKING
 
 from .grid_ref import GridRef
@@ -24,6 +25,9 @@ class Grid:
     allow_diagonal_moves: bool, default True
     untraversable_locations: list[GridRef]
         List of locations which cannot be traversed.
+    traversed: list[GridRef]
+        List of locations which have been traversed.
+        Currently populated externally.
 
     Non-public/internal attributes
     ------------------------------
@@ -43,6 +47,8 @@ class Grid:
         self.allow_diagonal_moves = allow_diagonal_moves
 
         self.untraversable_locations: list[GridRef] = []
+        self.traversed: set[GridRef] = set()
+
         self._directions = CARDINAL_DIRECTIONS
         if self.allow_diagonal_moves:
             self._directions.update(DIAGONAL_DIRECTIONS)
@@ -51,6 +57,12 @@ class Grid:
     def in_bounds(self, location: GridRef) -> bool:
         """Determine whether `location` is within the Grid."""
         return 0 <= location.x < self.size_x and 0 <= location.y < self.size_y
+
+    def random_location(self) -> GridRef:
+        """Return a random location on the Grid."""
+        return GridRef(
+            random.randint(0, self.size_x - 1), random.randint(0, self.size_y - 1)
+        )
 
     def is_traversable(self, location: GridRef) -> bool:
         """Determine whether `location` is traversable."""
@@ -93,12 +105,22 @@ class Grid:
             )
         return self.untraversable_locations
 
-    @staticmethod
-    def cost(location1: GridRef, location2: GridRef) -> float:
-        """Calculate the cost as Euclidean distance between two locations."""
-        x_dist = abs(location1.x - location2.x)
-        y_dist = abs(location1.y - location2.y)
-        return math.sqrt(x_dist**2 + y_dist**2)
+    def cost(self, from_location: GridRef, to_location: GridRef) -> float:
+        """Calculate the cost as Euclidean distance from one location to another.
+
+        NB: when calculating next step in a search, locations will be adjacent, so a
+        cardinal move has basic cost = 1, and diagonal basic cost =~ 1.4.
+        This function is generalised for wider use.
+
+        """
+        x_dist = abs(from_location.x - to_location.x)
+        y_dist = abs(from_location.y - to_location.y)
+        cost = math.sqrt(x_dist**2 + y_dist**2)
+
+        if to_location in self.traversed:
+            cost = cost * 0.5
+
+        return max(cost, 0)
 
     def text_render(self) -> str:
         """Output a text-based visual representation."""
