@@ -23,7 +23,7 @@ def test_create_happy_path() -> None:
     assert agent0._came_from == {}
     assert agent0._cost_so_far == {}
     assert agent0.goal is None
-    assert agent0.grid.agents == [agent0]
+    assert grid0.agents == {agent0}
 
 
 def test_agent_not_within_grid_bounds_raises_exception() -> None:

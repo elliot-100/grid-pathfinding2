@@ -29,7 +29,7 @@ class Grid:
         self.size_y = size_y
         self.allow_diagonal_moves = allow_diagonal_moves
 
-        self.untraversable_locations: list[GridRef] = []
+        self.untraversable_locations: set[GridRef] = set()
         """Locations which cannot be traversed."""
         self.traversed: set[GridRef] = set()
         """Locations which have been traversed.
@@ -38,7 +38,7 @@ class Grid:
         self._directions = _CARDINAL_DIRECTIONS
         if self.allow_diagonal_moves:
             self._directions.update(_DIAGONAL_DIRECTIONS)
-        self.agents: list[Agent] = []
+        self.agents: set[Agent] = set()
 
     def in_bounds(self, location: GridRef) -> bool:
         """Determine whether a location is within the grid."""
@@ -74,7 +74,7 @@ class Grid:
                 reachable_neighbours.add(neighbour)
         return reachable_neighbours
 
-    def untraversable_from_map(self, grid_map: list[str]) -> list[GridRef]:
+    def set_untraversable_from_map(self, grid_map: list[str]) -> None:
         """Set untraversable locations from 'X's in text representation.
 
         Does not set grid dimensions. Out of bounds locations are ignored.
@@ -89,14 +89,12 @@ class Grid:
             "..X",
             ]
         """
-        self.untraversable_locations = []
         for y, row in enumerate(grid_map):
-            self.untraversable_locations.extend(
+            self.untraversable_locations.update(
                 GridRef(x, y)
                 for x, cell in enumerate(row)
                 if cell == "X" and self.in_bounds(GridRef(x, y))
             )
-        return self.untraversable_locations
 
     def cost(self, from_location: GridRef, to_location: GridRef) -> float:
         """Calculate the cost as Euclidean distance from one location to another.

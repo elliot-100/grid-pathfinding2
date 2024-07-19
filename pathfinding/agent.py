@@ -26,7 +26,7 @@ class Agent:
         self.path_to_goal: list[GridRef] = []
         self._came_from: dict[GridRef, GridRef | None] = {}
         self._cost_so_far: dict[GridRef, float] = {}
-        self.grid.agents.append(self)
+        self.grid.agents.add(self)
 
     def uniform_cost_search(
         self,
