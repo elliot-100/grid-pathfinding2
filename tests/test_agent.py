@@ -51,8 +51,8 @@ def test_uniform_cost_search__happy_path() -> None:
     search = agent0.uniform_cost_search()
 
     # assert
-    assert search == [
+    assert search == {
         GridRef(0, 0),
         GridRef(1, 1),
         GridRef(2, 2),
-    ]
+    }
