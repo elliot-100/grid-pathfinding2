@@ -24,8 +24,6 @@ class Agent:
 
         self.goal: GridRef | None = None
         self.path_to_goal: list[GridRef] = []
-        self._came_from: dict[GridRef, GridRef | None] = {}
-        self._cost_so_far: dict[GridRef, float] = {}
         self.grid.agents.add(self)
 
     def uniform_cost_search(
@@ -43,9 +41,8 @@ class Agent:
         """
         if self.goal is None:
             raise ValueError
-        self._came_from[self.location] = None
-        self._cost_so_far[self.location] = 0
-
+        came_from: dict[GridRef, GridRef | None] = {self.location: None}
+        cost_so_far: dict[GridRef, float] = {self.location: 0}
         frontier: _PriorityQueue = _PriorityQueue()
         frontier.put(0, self.location)
 
@@ -56,17 +53,17 @@ class Agent:
                 break
 
             for new_location in self.grid.neighbours(current_location):
-                new_cost = self._cost_so_far[current_location] + self.grid.cost(
+                new_cost = cost_so_far[current_location] + self.grid.cost(
                     current_location, new_location
                 )
                 if (
-                    new_location not in self._came_from
-                    or new_cost < self._cost_so_far[new_location]
+                    new_location not in came_from
+                    or new_cost < cost_so_far[new_location]
                     # add new_location to frontier if cheaper
                 ):
-                    self._cost_so_far[new_location] = new_cost
+                    cost_so_far[new_location] = new_cost
                     frontier.put(priority=new_cost, location=new_location)
-                    self._came_from[new_location] = current_location
+                    came_from[new_location] = current_location
 
         # Construct path starting at goal and retracing to agent location...
         path_from_goal: list[GridRef] = [self.goal]
@@ -77,7 +74,7 @@ class Agent:
                 raise ValueError(err_msg)
             # TO DO:  Incompatible types in assignment (expression has type "GridRef |
             # None", variable has type "GridRef")
-            location = self._came_from.get(location)  # type: ignore[assignment]
+            location = came_from.get(location)  # type: ignore[assignment]
             path_from_goal.append(location)
 
         self.path_to_goal = list(reversed(path_from_goal))
