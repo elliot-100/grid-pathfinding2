@@ -79,5 +79,6 @@ class Agent:
             # None", variable has type "GridRef")
             location = self._came_from.get(location)  # type: ignore[assignment]
             path_from_goal.append(location)
-            self.path_to_goal = list(reversed(path_from_goal))
+
+        self.path_to_goal = list(reversed(path_from_goal))
         return self.path_to_goal
