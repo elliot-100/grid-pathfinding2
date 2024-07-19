@@ -15,14 +15,12 @@ def run() -> None:
     logging.basicConfig(level=logging.INFO)
 
     grid = Grid(64, 64)
-    grid.untraversable_locations.extend(
-        [
-            GridRef(5, 2),
-            GridRef(5, 3),
-            GridRef(6, 2),
-            GridRef(6, 3),
-        ]
-    )
+    grid.untraversable_locations = {
+        GridRef(5, 2),
+        GridRef(5, 3),
+        GridRef(6, 2),
+        GridRef(6, 3),
+    }
     agents = [
         Agent(
             grid,

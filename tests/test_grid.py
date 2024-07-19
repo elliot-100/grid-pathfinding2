@@ -14,7 +14,7 @@ def test_create_happy_path() -> None:
     assert grid0.size_x == 8
     assert grid0.size_y == 7
     assert grid0.allow_diagonal_moves is True
-    assert grid0.untraversable_locations == []
+    assert grid0.untraversable_locations == set()
     assert grid0._directions == {
         (-1, -1),
         (-1, 0),
@@ -25,7 +25,7 @@ def test_create_happy_path() -> None:
         (1, 0),
         (1, 1),
     }
-    assert grid0.agents == []
+    assert grid0.agents == set()
 
 
 def test_neighbours_not_at_edge() -> None:
@@ -77,12 +77,12 @@ def test_untraversable_from_map() -> None:
     ]
 
     # act
-    blocks = grid0.untraversable_from_map(block_map)
+    grid0.set_untraversable_from_map(block_map)
 
     # assert
-    assert blocks == [
+    assert grid0.untraversable_locations == {
         GridRef(0, 0),
         GridRef(3, 0),
         GridRef(1, 1),
         GridRef(2, 2),
-    ]
+    }
