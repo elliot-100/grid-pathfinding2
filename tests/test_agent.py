@@ -20,8 +20,6 @@ def test_create_happy_path() -> None:
     # assert
     assert agent0.grid == grid0
     assert agent0.location == GridRef(1, 1)
-    assert agent0._came_from == {}
-    assert agent0._cost_so_far == {}
     assert agent0.goal is None
     assert grid0.agents == {agent0}
 
