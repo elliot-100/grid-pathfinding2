@@ -23,21 +23,23 @@ class Agent:
             raise IndexError(err_msg)
 
         self.goal: GridRef | None = None
-        self.path_to_goal: list[GridRef] = []
+        self.path_to_goal: set[GridRef] = set()
+        """Locations on the path to goal."""
+
         self.grid.agents.add(self)
 
     def uniform_cost_search(
         self,
-    ) -> list[GridRef]:
+    ) -> set[GridRef]:
         """Perform uniform cost search for`self.goal`.
 
         Variation of Dijkstra's algorithm.
 
         Returns
         -------
-        list[GridRef] :
-            Path to `self.goal` as a list of locations.
-            Empty list if no path found.
+        set[GridRef] :
+            Locations on the path to `self.goal`.
+            Empty if no path found.
         """
         if self.goal is None:
             raise ValueError
@@ -66,7 +68,7 @@ class Agent:
                     came_from[new_location] = current_location
 
         # Construct path starting at goal and retracing to agent location...
-        path_from_goal: list[GridRef] = [self.goal]
+        self.path_to_goal = {self.goal}
         current_location = self.goal
 
         while current_location is not self.location:
@@ -75,7 +77,6 @@ class Agent:
                 err_msg = "`came_from_location` unexpectedly `None`."
                 raise TypeError(err_msg)
             current_location = came_from_location
-            path_from_goal.append(current_location)
+            self.path_to_goal.add(current_location)
 
-        self.path_to_goal = list(reversed(path_from_goal))
         return self.path_to_goal
