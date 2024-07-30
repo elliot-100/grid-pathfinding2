@@ -10,6 +10,7 @@ from pathfinding.grid_ref import GridRef
 from pathfinding.image_renderer import GridRenderer
 
 AGENT_COUNT = 100
+REPORT_PROGRESS_FACTOR = 0.1
 
 
 def run() -> None:
@@ -34,11 +35,19 @@ def run() -> None:
     ]
     log_info(log, "Grid and agents initialised.", start_time)
 
-    for agent in agents:
+    progress_reported = 0
+    for i, agent in enumerate(agents):
         agent.goal = grid.random_location()
         path = agent.uniform_cost_search()
         for location in path:
             grid.traversed.add(location)
+
+        progress = i / AGENT_COUNT
+        if progress >= progress_reported + REPORT_PROGRESS_FACTOR:
+            log_info(
+                log, f"{i} iterations done; {progress*100:.0f}% complete", start_time
+            )
+            progress_reported = progress
 
     log_info(log, f"{AGENT_COUNT} iterations complete.", start_time)
     renderer = GridRenderer(grid, scale=8)
