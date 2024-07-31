@@ -24,12 +24,10 @@ class Grid:
         size_y: int,
         *,
         allow_diagonal_moves: bool = True,
-        prefer_traversed_factor: float = 0,
     ) -> None:
         self.size_x = size_x
         self.size_y = size_y
         self.allow_diagonal_moves = allow_diagonal_moves
-        self.prefer_traversed_factor = prefer_traversed_factor
 
         self.untraversable_locations: set[GridRef] = set()
         """Locations which cannot be traversed."""
@@ -98,7 +96,8 @@ class Grid:
                 if cell == "X" and self.in_bounds(GridRef(x, y))
             )
 
-    def cost(self, from_location: GridRef, to_location: GridRef) -> float:
+    @staticmethod
+    def cost(from_location: GridRef, to_location: GridRef) -> float:
         """Calculate the cost as Euclidean distance from one location to another.
 
         NB: when calculating next step in a search, locations will be adjacent, so a
@@ -106,14 +105,11 @@ class Grid:
         This function is generalised for wider use.
 
         """
+        if from_location == to_location:
+            raise ValueError
         x_dist = abs(from_location.x - to_location.x)
         y_dist = abs(from_location.y - to_location.y)
-        cost = math.sqrt(x_dist**2 + y_dist**2)
-
-        if self.prefer_traversed_factor != 0 and to_location in self.traversed:
-            cost = cost * (1 - self.prefer_traversed_factor)
-
-        return max(cost, 0)
+        return math.sqrt(x_dist**2 + y_dist**2)
 
     def text_render(self) -> str:
         """Output a text-based visual representation."""

@@ -28,15 +28,21 @@ class Agent:
         self.path_to_goal: set[GridRef] = set()
         """Locations on the path to goal.
         Set indirectly by `Agent.uniform_cost_search()` at present."""
-
+        self.cost_so_far: dict[GridRef, float] = {self.location: 0}
         self.grid.agents.add(self)
 
     def uniform_cost_search(
         self,
+        prefer_existing_paths_factor: float = 0,
     ) -> set[GridRef]:
         """Perform uniform cost search for`self.goal`.
 
         Variation of Dijkstra's algorithm.
+
+        Parameters
+        ----------
+        prefer_existing_paths_factor :
+              A 'discount factor' for using a location on previous paths.
 
         Returns
         -------
@@ -47,7 +53,7 @@ class Agent:
         if self.goal is None:
             raise ValueError
         came_from: dict[GridRef, GridRef | None] = {self.location: None}
-        cost_so_far: dict[GridRef, float] = {self.location: 0}
+
         frontier: _PriorityQueue = _PriorityQueue()
         frontier.put(0, self.location)
 
@@ -58,15 +64,17 @@ class Agent:
                 break
 
             for new_location in self.grid.neighbours(current_location):
-                new_cost = cost_so_far[current_location] + self.grid.cost(
+                new_cost = self.cost_so_far[current_location] + self.grid.cost(
                     current_location, new_location
                 )
+                if new_location in self.grid.traversed:
+                    new_cost = new_cost * (1 - prefer_existing_paths_factor)
                 if (
                     new_location not in came_from
-                    or new_cost < cost_so_far[new_location]
+                    or new_cost < self.cost_so_far[new_location]
                     # add new_location to frontier if cheaper
                 ):
-                    cost_so_far[new_location] = new_cost
+                    self.cost_so_far[new_location] = new_cost
                     frontier.put(priority=new_cost, location=new_location)
                     came_from[new_location] = current_location
 
@@ -83,3 +91,20 @@ class Agent:
             self.path_to_goal.add(current_location)
 
         return self.path_to_goal
+
+    def _cost(
+        self,
+        from_location: GridRef,
+        to_location: GridRef,
+        prefer_existing_paths_factor: float,
+    ) -> float:
+        if from_location == to_location:
+            raise ValueError
+        cost = self.cost_so_far[from_location] + self.grid.cost(
+            from_location, to_location
+        )
+        # apply discount for using existing paths
+        if to_location in self.grid.traversed:
+            cost = cost * (1 - prefer_existing_paths_factor)
+        print(cost)
+        return cost
