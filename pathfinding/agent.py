@@ -67,15 +67,15 @@ class Agent:
 
         # Construct path starting at goal and retracing to agent location...
         path_from_goal: list[GridRef] = [self.goal]
-        location = self.goal
-        while location is not self.location:
-            if location is None:
-                err_msg = "Unexpected error."
-                raise ValueError(err_msg)
-            # TO DO:  Incompatible types in assignment (expression has type "GridRef |
-            # None", variable has type "GridRef")
-            location = came_from.get(location)  # type: ignore[assignment]
-            path_from_goal.append(location)
+        current_location = self.goal
+
+        while current_location is not self.location:
+            came_from_location = came_from.get(current_location)
+            if came_from_location is None:
+                err_msg = "`came_from_location` unexpectedly `None`."
+                raise TypeError(err_msg)
+            current_location = came_from_location
+            path_from_goal.append(current_location)
 
         self.path_to_goal = list(reversed(path_from_goal))
         return self.path_to_goal
