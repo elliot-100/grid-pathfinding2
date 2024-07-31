@@ -28,7 +28,6 @@ class Agent:
         self.path_to_goal: set[GridRef] = set()
         """Locations on the path to goal.
         Set indirectly by `Agent.uniform_cost_search()` at present."""
-
         self.grid.agents.add(self)
 
     def uniform_cost_search(
@@ -46,8 +45,9 @@ class Agent:
         """
         if self.goal is None:
             raise ValueError
+        self.cost_so_far = {self.location: 0}
+
         came_from: dict[GridRef, GridRef | None] = {self.location: None}
-        cost_so_far: dict[GridRef, float] = {self.location: 0}
         frontier: _PriorityQueue = _PriorityQueue()
         frontier.put(0, self.location)
 
@@ -58,15 +58,13 @@ class Agent:
                 break
 
             for new_location in self.grid.neighbours(current_location):
-                new_cost = cost_so_far[current_location] + self.grid.cost(
-                    current_location, new_location
-                )
+                new_cost = self._cost(current_location, new_location)
                 if (
                     new_location not in came_from
-                    or new_cost < cost_so_far[new_location]
+                    or new_cost < self.cost_so_far[new_location]
                     # add new_location to frontier if cheaper
                 ):
-                    cost_so_far[new_location] = new_cost
+                    self.cost_so_far[new_location] = new_cost
                     frontier.put(priority=new_cost, location=new_location)
                     came_from[new_location] = current_location
 
@@ -83,3 +81,13 @@ class Agent:
             self.path_to_goal.add(current_location)
 
         return self.path_to_goal
+
+    def _cost(
+        self,
+        from_location: GridRef,
+        to_location: GridRef,
+    ) -> float:
+        """Currently just wraps Grid.cost(), but to be expanded."""
+        return self.cost_so_far[from_location] + self.grid.cost(  # type: ignore[index]
+            from_location, to_location,
+        )
