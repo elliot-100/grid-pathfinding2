@@ -17,7 +17,7 @@ def run() -> None:
     log = logging.getLogger(__name__)
     start_time = time.time()
 
-    grid = Grid(64, 64)
+    grid = Grid(64, 64, prefer_traversed_factor=0.5)
     grid.untraversable_locations = {
         GridRef(5, 2),
         GridRef(5, 3),
