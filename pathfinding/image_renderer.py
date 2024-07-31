@@ -69,3 +69,9 @@ class GridRenderer:
     ) -> None:
         """Show the image."""
         self._image.show()
+
+    def save(self, filename: str,
+             ) -> None:
+        """Show the image."""
+        self._image.save(filename)
+
