@@ -7,6 +7,7 @@ from typing import ClassVar
 from PIL import Image
 
 from . import log_info
+from ._pygame_colordict import THECOLORS
 from .grid import Grid
 from .grid_ref import GridRef
 
@@ -14,12 +15,12 @@ from .grid_ref import GridRef
 class GridRenderer:
     """Renders a `.grid.Grid` as a static image."""
 
-    COLOR_MAPPING: ClassVar = {
-        "EMPTY": (128, 128, 128),  # pygame 'grey50'
-        "BLOCK": (104, 104, 104),  # pygame 'grey50'
-        "START": (0, 139, 0),  # pygame 'green4'
-        "GOAL": (238, 0, 0),  # pygame 'red2'
-        "ON_PATH": (255, 193, 37),  # pygame 'goldenrod1'
+    _COLOR_MAPPING: ClassVar = {
+        "EMPTY": THECOLORS["grey50"],
+        "BLOCK": THECOLORS["grey40"],
+        "AGENT_START": THECOLORS["green4"],
+        "AGENT_GOAL": THECOLORS["red2"],
+        "ON_AGENT_PATH": THECOLORS["goldenrod1"],
     }
 
     def __init__(
@@ -53,16 +54,19 @@ class GridRenderer:
     def _pixel_color(self, x: int, y: int) -> tuple[int, int, int]:
         """Determine the pixel colour."""
         location = GridRef(x, y)
+        color = self._COLOR_MAPPING["EMPTY"]
+
         for agent in self.grid.agents:
-            if location == agent.goal:
-                return self.COLOR_MAPPING["GOAL"]  # type: ignore[no-any-return]
-            if location == agent.location:
-                return self.COLOR_MAPPING["START"]  # type: ignore[no-any-return]
             if location in agent.path_to_goal:
-                return self.COLOR_MAPPING["ON_PATH"]  # type: ignore[no-any-return]
+                color = self._COLOR_MAPPING["ON_AGENT_PATH"]
+            if location == agent.location:
+                color = self._COLOR_MAPPING["AGENT_START"]
+            if location == agent.goal:
+                color = self._COLOR_MAPPING["AGENT_GOAL"]
+
         if location in self.grid.untraversable_locations:
-            return self.COLOR_MAPPING["BLOCK"]  # type: ignore[no-any-return]
-        return self.COLOR_MAPPING["EMPTY"]  # type: ignore[no-any-return]
+            color = self._COLOR_MAPPING["BLOCK"]
+        return color  # type: ignore[no-any-return]
 
     def show(
         self,
@@ -70,8 +74,9 @@ class GridRenderer:
         """Show the image."""
         self._image.show()
 
-    def save(self, filename: str,
-             ) -> None:
+    def save(
+        self,
+        filename: str,
+    ) -> None:
         """Show the image."""
         self._image.save(filename)
-
