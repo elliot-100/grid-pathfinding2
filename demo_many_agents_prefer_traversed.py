@@ -18,7 +18,7 @@ def run() -> None:
     log = logging.getLogger(__name__)
     start_time = time.time()
 
-    grid = Grid(64, 64, prefer_traversed_factor=0.5)
+    grid = Grid(64, 64)
     grid.untraversable_locations = {
         GridRef(5, 2),
         GridRef(5, 3),
@@ -38,7 +38,7 @@ def run() -> None:
     progress_reported = 0.0
     for i, agent in enumerate(agents):
         agent.goal = grid.random_location()
-        path = agent.uniform_cost_search()
+        path = agent.uniform_cost_search(existing_path_discount=0.5)
         for location in path:
             grid.traversed.add(location)
 
@@ -56,5 +56,5 @@ def run() -> None:
 
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.INFO)
+    logging.basicConfig(level=logging.DEBUG)
     run()

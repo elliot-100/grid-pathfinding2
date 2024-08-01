@@ -32,6 +32,7 @@ class Agent:
 
     def uniform_cost_search(
         self,
+        existing_path_discount: float = 0,
     ) -> set[GridRef]:
         """Perform uniform cost search for`self.goal`.
 
@@ -58,7 +59,11 @@ class Agent:
                 break
 
             for new_location in self.grid.neighbours(current_location):
-                new_cost = self._cost(current_location, new_location)
+                new_cost = self._cost(
+                    current_location,
+                    new_location,
+                    existing_path_discount,
+                )
                 if (
                     new_location not in came_from
                     or new_cost < self.cost_so_far[new_location]
@@ -86,8 +91,14 @@ class Agent:
         self,
         from_location: GridRef,
         to_location: GridRef,
+        existing_path_discount: float = 0,
     ) -> float:
-        """Currently just wraps Grid.cost(), but to be expanded."""
-        return self.cost_so_far[from_location] + self.grid.cost(  # type: ignore[index]
-            from_location, to_location,
+        """Wrap Grid.cost(), and applies discount if relevant."""
+        cost = self.cost_so_far[from_location] + self.grid.cost(  # type: ignore[index]
+            from_location,
+            to_location,
         )
+
+        if to_location in self.grid.traversed:
+            cost = cost * (1 - existing_path_discount)
+        return cost
