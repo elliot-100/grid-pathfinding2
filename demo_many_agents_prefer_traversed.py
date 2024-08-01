@@ -39,8 +39,7 @@ def run() -> None:
     for i, agent in enumerate(agents):
         agent.goal = grid.random_location()
         path = agent.uniform_cost_search()
-        for location in path:
-            grid.traversed.add(location)
+        grid.shared_path_locations.update(path)
 
         progress = i / AGENT_COUNT
         if progress >= progress_reported + REPORT_PROGRESS_FACTOR:

@@ -33,8 +33,8 @@ class Grid:
 
         self.untraversable_locations: set[GridRef] = set()
         """Locations which cannot be traversed."""
-        self.traversed: set[GridRef] = set()
-        """Locations which have been traversed.
+        self.shared_path_locations: set[GridRef] = set()
+        """Locations on an agent's path.
         Currently populated externally."""
 
         self._directions = _CARDINAL_DIRECTIONS
@@ -110,7 +110,10 @@ class Grid:
         y_dist = abs(from_location.y - to_location.y)
         cost = math.sqrt(x_dist**2 + y_dist**2)
 
-        if self.prefer_traversed_factor != 0 and to_location in self.traversed:
+        if (
+            self.prefer_traversed_factor != 0
+            and to_location in self.shared_path_locations
+        ):
             cost = cost * (1 - self.prefer_traversed_factor)
 
         return max(cost, 0)

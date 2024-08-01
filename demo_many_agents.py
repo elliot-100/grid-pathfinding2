@@ -37,7 +37,7 @@ def run() -> None:
         agent.goal = grid.random_location()
         path = agent.uniform_cost_search()
         for location in path:
-            grid.traversed.add(location)
+            grid.shared_path_locations.add(location)
 
     log_info(log, f"{AGENT_COUNT} iterations complete.", start_time)
     renderer = GridRenderer(grid, scale=8)

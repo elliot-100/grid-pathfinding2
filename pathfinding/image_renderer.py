@@ -56,9 +56,10 @@ class GridRenderer:
         location = GridRef(x, y)
         color = self._COLOR_MAPPING["EMPTY"]
 
+        if location in self.grid.shared_path_locations:
+            color = self._COLOR_MAPPING["ON_AGENT_PATH"]
+
         for agent in self.grid.agents:
-            if location in agent.path_to_goal:
-                color = self._COLOR_MAPPING["ON_AGENT_PATH"]
             if location == agent.location:
                 color = self._COLOR_MAPPING["AGENT_START"]
             if location == agent.goal:
