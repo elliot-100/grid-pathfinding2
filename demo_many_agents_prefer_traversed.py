@@ -35,7 +35,7 @@ def run() -> None:
     ]
     log_info(log, "Grid and agents initialised.", start_time)
 
-    progress_reported = 0
+    progress_reported = 0.0
     for i, agent in enumerate(agents):
         agent.goal = grid.random_location()
         path = agent.uniform_cost_search()
