@@ -51,6 +51,7 @@ def run() -> None:
 
     log_info(log, f"{AGENT_COUNT} iterations complete.", start_time)
     renderer = GridRenderer(grid, scale=8)
+    log_info(log, "Image rendered.", start_time)
     renderer.show()
 
 

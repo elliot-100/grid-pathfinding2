@@ -1,9 +1,12 @@
 """Module containing `GridRenderer` class."""
 
+import logging
+import time
 from typing import ClassVar
 
 from PIL import Image
 
+from . import log_info
 from .grid import Grid
 from .grid_ref import GridRef
 
@@ -25,17 +28,21 @@ class GridRenderer:
         scale: int = 32,
     ) -> None:
         """Create a new GridRenderer instance."""
+        log = logging.getLogger(__name__)
+        start_time = time.time()
         self.grid = grid
         self._image = Image.new(
             mode="RGB",  # 3x8-bit pixels, true color
             size=(self.grid.size_x, self.grid.size_y),
         )
         # populate pixels
+        log_info(log, "Calculating pixels...", start_time)
         pixels = [
             self._pixel_color(x, y)
             for x in range(self.grid.size_x)
             for y in range(self.grid.size_y)
         ]
+        log_info(log, "Done.", start_time)
         self._image.putdata(pixels)
         # resize for output
         self._image = self._image.resize(
