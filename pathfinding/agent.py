@@ -16,6 +16,7 @@ class Agent:
 
     def __init__(self, grid: Grid, location: GridRef) -> None:
         self.grid = grid
+        """Reference to a `.grid.Grid` instance."""
         self.location = location
 
         if not self.grid.in_bounds(self.location):
@@ -23,8 +24,10 @@ class Agent:
             raise IndexError(err_msg)
 
         self.goal: GridRef | None = None
+        """Needs to be set directly, at present."""
         self.path_to_goal: set[GridRef] = set()
-        """Locations on the path to goal."""
+        """Locations on the path to goal.
+        Set indirectly by `Agent.uniform_cost_search()` at present."""
 
         self.grid.agents.add(self)
 
@@ -37,7 +40,7 @@ class Agent:
 
         Returns
         -------
-        set[GridRef] :
+        set[GridRef]
             Locations on the path to `self.goal`.
             Empty if no path found.
         """

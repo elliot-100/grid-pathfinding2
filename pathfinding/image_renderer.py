@@ -28,7 +28,7 @@ class GridRenderer:
         grid: Grid,
         scale: int = 32,
     ) -> None:
-        """Create a new GridRenderer instance."""
+        """Create a new `GridRenderer` instance bound to `grid`."""
         log = logging.getLogger(__name__)
         start_time = time.time()
         self.grid = grid
@@ -78,5 +78,5 @@ class GridRenderer:
         self,
         filename: str,
     ) -> None:
-        """Show the image."""
+        """Save the image."""
         self._image.save(filename)
