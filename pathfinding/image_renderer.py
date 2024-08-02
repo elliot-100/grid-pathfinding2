@@ -40,8 +40,8 @@ class GridRenderer:
         log_info(log, "Calculating pixels...", start_time)
         pixels = [
             self._pixel_color(x, y)
-            for x in range(self.grid.size_x)
             for y in range(self.grid.size_y)
+            for x in range(self.grid.size_x)
         ]
         log_info(log, "Done.", start_time)
         self._image.putdata(pixels)
