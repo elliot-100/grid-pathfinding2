@@ -92,3 +92,24 @@ def test_uniform_cost_search__goal_is_untraversable() -> None:
 
     # assert
     assert search == set()
+
+
+def test_uniform_cost_search__no_path() -> None:
+    """Test that empty `set` is returned when no path to goal."""
+    # arrange
+    grid0 = Grid(3, 3)
+    grid0.set_untraversable_area(
+        GridRef(2, 3),
+        GridRef(3, 2),
+    )
+    agent0 = Agent(
+        grid0,
+        GridRef(0, 0),
+    )
+    agent0.goal = GridRef(3, 3)
+
+    # act
+    search = agent0.uniform_cost_search()
+
+    # assert
+    assert search == set()

@@ -85,8 +85,7 @@ class Agent:
         while current_location is not self.location:
             came_from_location = came_from.get(current_location)
             if came_from_location is None:
-                err_msg = "`came_from_location` unexpectedly `None`."
-                raise TypeError(err_msg)
+                return set()
             current_location = came_from_location
             self.path_to_goal.add(current_location)
 
