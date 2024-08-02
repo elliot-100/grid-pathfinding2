@@ -58,20 +58,37 @@ def test_uniform_cost_search__happy_path() -> None:
     }
 
 
-def test_uniform_cost_search__goal_is_same_as_start() -> None:
-    """Test that search is calculated correctly when goal is same as start."""
+def test_uniform_cost_search__start_is_untraversable() -> None:
+    """Test that empty `set` is returned when start is untraversable."""
     # arrange
     grid0 = Grid(3, 3)
+    grid0.untraversable_locations.add(GridRef(1, 2))
     agent0 = Agent(
         grid0,
         GridRef(1, 2),
     )
-    agent0.goal = GridRef(1, 2)
+    agent0.goal = GridRef(3, 3)
 
     # act
     search = agent0.uniform_cost_search()
 
     # assert
-    assert search == {
+    assert search == set()
+
+
+def test_uniform_cost_search__goal_is_untraversable() -> None:
+    """Test that empty `set` is returned when goal is untraversable."""
+    # arrange
+    grid0 = Grid(3, 3)
+    grid0.untraversable_locations.add(GridRef(3, 3))
+    agent0 = Agent(
+        grid0,
         GridRef(1, 2),
-    }
+    )
+    agent0.goal = GridRef(3, 3)
+
+    # act
+    search = agent0.uniform_cost_search()
+
+    # assert
+    assert search == set()

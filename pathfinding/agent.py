@@ -48,6 +48,11 @@ class Agent:
             raise ValueError
         if self.goal == self.location:
             return {self.location}
+        if (
+            self.location in self.grid.untraversable_locations
+            or self.goal in self.grid.untraversable_locations
+        ):
+            return set()
 
         came_from: dict[GridRef, GridRef | None] = {self.location: None}
         cost_so_far: dict[GridRef, float] = {self.location: 0}
