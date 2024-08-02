@@ -46,6 +46,9 @@ class Agent:
         """
         if self.goal is None:
             raise ValueError
+        if self.goal == self.location:
+            return {self.location}
+
         came_from: dict[GridRef, GridRef | None] = {self.location: None}
         cost_so_far: dict[GridRef, float] = {self.location: 0}
         frontier: _PriorityQueue = _PriorityQueue()

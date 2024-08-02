@@ -56,3 +56,22 @@ def test_uniform_cost_search__happy_path() -> None:
         GridRef(1, 1),
         GridRef(2, 2),
     }
+
+
+def test_uniform_cost_search__goal_is_same_as_start() -> None:
+    """Test that search is calculated correctly when goal is same as start."""
+    # arrange
+    grid0 = Grid(3, 3)
+    agent0 = Agent(
+        grid0,
+        GridRef(1, 2),
+    )
+    agent0.goal = GridRef(1, 2)
+
+    # act
+    search = agent0.uniform_cost_search()
+
+    # assert
+    assert search == {
+        GridRef(1, 2),
+    }
