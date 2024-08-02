@@ -56,6 +56,9 @@ class GridRenderer:
         location = GridRef(x, y)
         color = self._COLOR_MAPPING["EMPTY"]
 
+        if location in self.grid.untraversable_locations:
+            color = self._COLOR_MAPPING["BLOCK"]
+
         if location in self.grid.shared_path_locations:
             color = self._COLOR_MAPPING["ON_AGENT_PATH"]
 
@@ -65,8 +68,6 @@ class GridRenderer:
             if location == agent.goal:
                 color = self._COLOR_MAPPING["AGENT_GOAL"]
 
-        if location in self.grid.untraversable_locations:
-            color = self._COLOR_MAPPING["BLOCK"]
         return color  # type: ignore[no-any-return]
 
     def show(
