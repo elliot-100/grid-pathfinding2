@@ -19,17 +19,15 @@ def run() -> None:
     start_time = time.time()
 
     grid = Grid(64, 64, prefer_traversed_factor=0.5)
-    grid.untraversable_locations = {
-        GridRef(5, 2),
-        GridRef(5, 3),
-        GridRef(6, 2),
-        GridRef(6, 3),
-    }
+    grid.set_untraversable_area(
+        GridRef(20, 0),
+        GridRef(40, 70),
+    )
 
     agents = [
         Agent(
             grid,
-            location=grid.random_location(),
+            location=grid.random_location(allow_untraversable=True),
         )
         for _ in range(AGENT_COUNT)
     ]
@@ -37,7 +35,7 @@ def run() -> None:
 
     progress_reported = 0.0
     for i, agent in enumerate(agents):
-        agent.goal = grid.random_location()
+        agent.goal = grid.random_location(allow_untraversable=True)
         path = agent.uniform_cost_search()
         grid.shared_path_locations.update(path)
 
