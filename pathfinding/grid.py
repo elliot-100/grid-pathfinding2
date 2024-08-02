@@ -76,6 +76,15 @@ class Grid:
                 reachable_neighbours.add(neighbour)
         return reachable_neighbours
 
+    def set_untraversable_area(self, location1: GridRef, location2: GridRef) -> None:
+        """Set untraversable rectangle from two opposite corner locations.
+
+        Out of bounds locations are ignored.
+        """
+        for x in range(location1.x, location2.x):
+            for y in range(location1.y, location2.y):
+                self.untraversable_locations.add(GridRef(x, y))
+
     def set_untraversable_from_map(self, grid_map: list[str]) -> None:
         """Set untraversable locations from 'X's in text representation.
 
